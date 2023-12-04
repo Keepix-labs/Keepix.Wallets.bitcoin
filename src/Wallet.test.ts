@@ -1,8 +1,4 @@
 import { Wallet } from './Wallet';
-import express from 'express';
-import cors from 'cors';
-import fetch from 'node-fetch';
-
 
 let mockedValues = {};
 let queryMockedCallBack = (url) => {
