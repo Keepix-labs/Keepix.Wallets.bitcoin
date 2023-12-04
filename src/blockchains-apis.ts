@@ -49,7 +49,7 @@ export const blockchainsApis = {
           "resultEval": "result.fees / result.size"
         }
       ],
-      "pushTx": [
+      "pushTx": [ // TODO add one more push api https://github.com/Blockstream/esplora/blob/master/API.md
         {
           "url": "https://api.blockcypher.com/v1/btc/main/txs/push",
           "method": "POST",
