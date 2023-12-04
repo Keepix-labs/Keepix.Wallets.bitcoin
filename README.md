@@ -1,5 +1,25 @@
 # Keepix.Wallets.bitcoin
 
+
+## Install
+
+```bash
+npm i @keepix/wallets-bitcoin
+```
+
+## Use
+
+```ts
+import { Wallet } from '@keepix/wallets-bitcoin';
+
+const wallet = new Wallet({ password: 'test', type: 'bitcoin' });
+
+console.log(await wallet.getCoinBalance());
+// 0.00000000
+```
+
+## Information
+
 Library that respects the WalletLibraryInterface.  
 This library is used to create wallets, hold coin and token balances and carry out transactions.  
   
