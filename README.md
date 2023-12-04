@@ -10,8 +10,7 @@ class Wallet {
         mnemonic?: string,
         privateKey?: string,
         type: string,
-        keepixTokens?: { coins: any, tokens: any } // whitelisted coins & tokens
-        rpc?: any,
+        apis?: any,
         privateKeyTemplate?: string
     }) {}
 
@@ -19,6 +18,8 @@ class Wallet {
     getMnemonic: () => string | undefined;
     getAddress: () => string;
     getProdiver: () => Promise<any>;
+
+    btcToSatoshi: (btc: number) => number;
 
     // returns like 1.01 (Always in readable value)
     getCoinBalance: (walletAddress?: string) => Promise<string>;

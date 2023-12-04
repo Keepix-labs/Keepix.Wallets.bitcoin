@@ -82,7 +82,6 @@ export class Wallet {
     private key: any;
     private mnemonic?: string;
     private type: string;
-    private keepixTokens?: { coins: any, tokens: any };
     private apis?: any;
     
     constructor({
@@ -91,8 +90,6 @@ export class Wallet {
         privateKey,
         derivated = false,
         type,
-        keepixTokens,
-        rpc,
         apis,
         privateKeyTemplate = 'KyaZBvGcmzV5wpRH9s9cU3VwmHo92KJtxPWhfEC6RFpJRbwSPXqx'
     }: {
@@ -101,14 +98,11 @@ export class Wallet {
         derivated?: boolean,
         privateKey?: string,
         type: string,
-        keepixTokens?: { coins: any, tokens: any } // whitelisted coins & tokens
-        rpc?: any,
         apis?: any,
         privateKeyTemplate?: string
     }) {
         defineDefaultNetwork(type);
         this.type = type;
-        this.keepixTokens = keepixTokens;
         this.apis = apis;
         // from password
         if (password !== undefined) {
