@@ -16,6 +16,13 @@ const wallet = new Wallet({ password: 'test', type: 'bitcoin' });
 
 console.log(await wallet.getCoinBalance());
 // 0.00000000
+
+console.log(wallet.getPrivateKey());
+// xxxxxxxxxxx
+
+console.log(wallet.getAddress());
+// 1HxJKBJso1jGJNoo5XmkiygE6c1gB1PQDo
+
 ```
 
 ## Information
