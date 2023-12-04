@@ -25,12 +25,12 @@ export const blockchainsApis = {
         }
       ],
       "getLatestBlockHash": [
-        // {
-        //   "url": "https://blockchain.info/q/latesthash",
-        //   "contentType": "text",
-        //   "method": "GET",
-        //   "resultEval": "result"
-        // },
+        {
+          "url": "https://blockchain.info/q/latesthash",
+          "contentType": "text",
+          "method": "GET",
+          "resultEval": "result"
+        },
         {
           "url": "https://api.blockcypher.com/v1/btc/main",
           "method": "GET",

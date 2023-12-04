@@ -4,8 +4,8 @@ import { entropyToMnemonic } from '@ethersproject/hdnode';
 import fetch from 'node-fetch';
 import { blockchainsApis } from './blockchains-apis';
 
-async function fetchBlockchainApi(type: string, key: string, format: (str: string) => string = (x) => x) {
-    const lstOfEndpoint = blockchainsApis[type][key];
+async function fetchBlockchainApi(type: string, apis: any = {}, key: string, format: (str: string) => string = (x) => x) {
+    const lstOfEndpoint = apis[key] ?? blockchainsApis[type][key];
     const endpointData = lstOfEndpoint[Math.floor(Math.random()*lstOfEndpoint.length)];
 
     if (endpointData.method === 'GET') {
@@ -83,7 +83,7 @@ export class Wallet {
     private mnemonic?: string;
     private type: string;
     private keepixTokens?: { coins: any, tokens: any };
-    private rpc?: any;
+    private apis?: any;
     
     constructor({
         password,
@@ -93,6 +93,7 @@ export class Wallet {
         type,
         keepixTokens,
         rpc,
+        apis,
         privateKeyTemplate = 'KyaZBvGcmzV5wpRH9s9cU3VwmHo92KJtxPWhfEC6RFpJRbwSPXqx'
     }: {
         password?: string,
@@ -102,12 +103,13 @@ export class Wallet {
         type: string,
         keepixTokens?: { coins: any, tokens: any } // whitelisted coins & tokens
         rpc?: any,
+        apis?: any,
         privateKeyTemplate?: string
     }) {
         defineDefaultNetwork(type);
         this.type = type;
         this.keepixTokens = keepixTokens;
-        this.rpc = rpc;
+        this.apis = apis;
         // from password
         if (password !== undefined) {
             if (derivated) { // can be used for creating multisig
@@ -129,6 +131,7 @@ export class Wallet {
             const derived = hdPrivateKey.derive("m/0'");
             this.key = derived.privateKey;
             this.mnemonic = mnemonic;
+            return ;
         }
         // from privateKey only
         if (privateKey !== undefined) {
@@ -147,7 +150,7 @@ export class Wallet {
     }
 
     public getMnemonic() { // not implemented
-        return '';
+        return this.mnemonic;
     }
 
     public getNetwork() {
@@ -170,7 +173,7 @@ export class Wallet {
     public async getCoinBalance(walletAddress?: string) {
         try {
             const targetAddress = walletAddress ?? this.getAddress();
-            const balance = await fetchBlockchainApi(this.type, 'getBalance', (str: string) => {
+            const balance = await fetchBlockchainApi(this.type, this.apis, 'getBalance', (str: string) => {
                 return str.replace(/\$address/gm, targetAddress);
             });
             return (Number(balance) / 100000000).toFixed(8);
@@ -228,7 +231,7 @@ export class Wallet {
 
         //https://api.blockcypher.com/v1/btc/main/txs/push
         //https://api.blockcypher.com/v1/btc/main/txs/decode (for testing)
-        const hash = await fetchBlockchainApi(this.type, 'pushTx', (str: string) => {
+        const hash = await fetchBlockchainApi(this.type, this.apis, 'pushTx', (str: string) => {
             return str.replace(/\$txHex/gm, txHex);
         });
         if (hash !== undefined) {
@@ -247,8 +250,8 @@ export class Wallet {
 
     public async getLatestBlockAverageFeePerByteInSatoshi() {
 
-        const lastestHash = await fetchBlockchainApi(this.type, 'getLatestBlockHash');
-        const averageFeesPerByteInSatoshi = await fetchBlockchainApi(this.type, 'getLatestBlockAverageFeePerByteInSatoshi', (str: string) => {
+        const lastestHash = await fetchBlockchainApi(this.type, this.apis, 'getLatestBlockHash');
+        const averageFeesPerByteInSatoshi = await fetchBlockchainApi(this.type, this.apis, 'getLatestBlockAverageFeePerByteInSatoshi', (str: string) => {
             return str.replace(/\$latesthash/gm, lastestHash)
         });
 
@@ -258,7 +261,7 @@ export class Wallet {
     }
 
     public async getUTXOList() {
-        const listOfUTXO = await fetchBlockchainApi(this.type, 'getUnspentOutputs', (str: string) => {
+        const listOfUTXO = await fetchBlockchainApi(this.type, this.apis, 'getUnspentOutputs', (str: string) => {
             return str.replace(/\$address/gm, this.getAddress())
         });
         return listOfUTXO;
