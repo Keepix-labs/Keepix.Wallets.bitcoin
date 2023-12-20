@@ -1,6 +1,6 @@
 {
   "name": "@keepix/wallets-bitcoin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Wallets bitcoin library",
   "private": false,
   "main": "dist/index.js",
@@ -41,8 +41,8 @@
     "@ethersproject/hdnode": "^5.7.0",
     "bitcore-lib": "^10.0.17",
     "bitcore-mnemonic": "^10.0.21",
+    "coinkey": "^3.0.0",
     "crypto": "^1.0.1",
-    "ethers": "^5.1.4",
     "node-fetch": "^2.7.0"
   },
   "keywords": [

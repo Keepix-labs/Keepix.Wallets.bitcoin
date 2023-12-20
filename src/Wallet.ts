@@ -3,6 +3,7 @@ import { blockchainsNetworks } from './blockchains-networks';
 import { entropyToMnemonic } from '@ethersproject/hdnode';
 import fetch from 'node-fetch';
 import { blockchainsApis } from './blockchains-apis';
+import CoinKey from 'coinkey';
 
 async function fetchBlockchainApi(type: string, apis: any = {}, key: string, format: (str: string) => string = (x) => x) {
     const lstOfEndpoint = apis[key] ?? blockchainsApis[type][key];
@@ -72,6 +73,10 @@ function defineDefaultNetwork(type: string) {
         }
         bitcore.Networks.defaultNetwork = bitcore.Networks.get(blockchainsNetworks[type].name);
     }
+}
+
+function getNetwork(type: string) {
+    return blockchainsNetworks[type];
 }
 
 /**
@@ -152,7 +157,9 @@ export class Wallet {
     }
 
     public getAddress() {
-        return this.key.toAddress().toString();
+        const network = getNetwork(this.type);
+        let ck = CoinKey.fromWif(this.key.toWIF(), {private: network.privatekey, public: network.publickey});
+        return ck.publicAddress.toString();
     }
 
     public async getProdiver() {

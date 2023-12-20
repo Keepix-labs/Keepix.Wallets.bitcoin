@@ -45,6 +45,16 @@ describe('basic wallet', () => {
     expect(wallet.getPrivateKey()).toEqual(privateKey);
   }, 60000);
 
+  it('can generate same dogecoin wallet', async () => {
+    const address = 'DN6PrSFX6RdYqNzPp7mKGjqpyjjyYAJWw7';
+    const privateKey = 'L19zVKSjUtKSnDJnKt34W5ZeoEQAWg3v1Nc4fjo4qou9oGPejJBz';
+
+    const wallet = new Wallet({ password: 'toto', type: 'dogecoin' });
+
+    expect(wallet.getAddress()).toEqual(address);
+    expect(wallet.getPrivateKey()).toEqual(privateKey);
+  }, 60000);
+
   it('can generate same derivated wallet', async () => {
     const address = '1GmUmogRCS3euPbTHtU1sHrC7CwLQBn1j1';
     const privateKey = 'Kx9xgFEmri3HG5MSqMdXczpeg73p4seZBo2Y4DRdrPFHJNGFiFbH';
