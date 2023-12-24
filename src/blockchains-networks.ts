@@ -82,4 +82,43 @@ export const blockchainsNetworks = {
         'bitseed.xf2.org'
       ]
     },
+    dash: {
+      name: 'livenet',
+      alias: 'mainnet',
+      pubkeyhash: 0x4c,
+      privatekey: 0xcc,
+      scripthash: 0x05,
+      bech32prefix: 'bc',
+      xpubkey: 0x0488b21e,
+      xprivkey: 0x0488ade4,
+      networkMagic: 0xE8F3E1E3,
+      port: 8333,
+      dnsSeeds: [
+        'seed.bitcoin.sipa.be',
+        'dnsseed.bluematt.me',
+        'dnsseed.bitcoin.dashjr.org',
+        'seed.bitcoinstats.com',
+        'seed.bitnodes.io',
+        'bitseed.xf2.org'
+      ]
+    },
+    'bitcoin-cash': {
+      name: 'livenet',
+      alias: 'mainnet',
+      pubkeyhash: 0x00,
+      privatekey: 0x80,
+      scripthash: 0x05,
+      bech32prefix: 'bc',
+      xpubkey: 0x0488B21E,
+      xprivkey: 0x0488ADE4,
+      networkMagic: 0xe3e1f3e8,
+      port: 8333,
+      dnsSeeds: [
+        "seed.bitcoinabc.org",
+        "seed-abc.bitcoinforks.org",
+        "seed.bitprim.org",
+        "seed.deadalnix.me",
+        "seeder.criptolayer.net"
+      ]
+    },
 };
