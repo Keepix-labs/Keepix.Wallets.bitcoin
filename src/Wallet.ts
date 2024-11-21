@@ -4,6 +4,7 @@ import { entropyToMnemonic } from '@ethersproject/hdnode';
 import fetch from 'node-fetch';
 import { blockchainsApis } from './blockchains-apis';
 import CoinKey from 'coinkey';
+import { sha256 } from 'js-sha256';
 
 async function fetchBlockchainApi(type: string, apis: any = {}, key: string, format: (str: string) => string = (x) => x) {
     const lstOfEndpoint = apis[key] ?? blockchainsApis[type][key];
@@ -27,10 +28,12 @@ async function fetchBlockchainApi(type: string, apis: any = {}, key: string, for
     }
 }
 
-function createPrivateKey(templatePrivateKey: string, password: string) {
-    const crypto = require('crypto');
-    const hash = crypto.createHash('sha256').update(templatePrivateKey + password, 'utf8').digest('hex');
-    return hash.substring(0, 64); // Truncate to 64 characters (32 bytes)
+function createPrivateKey(templatePrivateKey: string, password: string): string {
+    // Concaténation de la clé privée et du mot de passe
+    const combined = templatePrivateKey + password;
+
+    // Retourne le hash SHA-256 en hexadécimal
+    return sha256(combined).substring(0, 64);
 }
 
 function createPrivateDerivatedKeyFromMnemonic(mnemonic: string) {
