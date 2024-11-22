@@ -6,14 +6,14 @@ import { blockchainsApis } from './blockchains-apis';
 import CoinKey from 'coinkey';
 import { sha256 } from 'js-sha256';
 
-async function fetchBlockchainApi(type: string, apis: any = {}, key: string, format: (str: string) => string = (x) => x) {
+async function fetchBlockchainApi(type: string, apis: any = {}, key: string, format: (str: string) => string = (x) => x, additionalData: any = {}) {
     const lstOfEndpoint = apis[key] ?? blockchainsApis[type][key];
     const endpointData = lstOfEndpoint[Math.floor(Math.random()*lstOfEndpoint.length)];
 
     if (endpointData.method === 'GET') {
         const query = (await fetch(format(endpointData.url)));
         const resultOfQuery = endpointData.contentType === 'text' ? JSON.parse(await query.text()) : (await query.json());
-        const resultOfEval = new Function("v", `with (v) { return (${format(endpointData.resultEval)})}`)({ result: resultOfQuery });
+        const resultOfEval = endpointData.resultEval(resultOfQuery, additionalData);//new Function("v", `with (v) { return (${format(endpointData.resultEval)})}`)({ result: resultOfQuery });
 
         return resultOfEval;
     } else if (endpointData.method === 'POST') {
@@ -22,7 +22,7 @@ async function fetchBlockchainApi(type: string, apis: any = {}, key: string, for
             body: typeof endpointData.body === 'string' ? format(endpointData.body) : format(JSON.stringify(endpointData.body))
         }));
         const resultOfQuery = endpointData.contentType === 'text' ? (await query.text()) : (await query.json());
-        const resultOfEval = new Function("v", `with (v) { return (${format(endpointData.resultEval)})}`)({ result: resultOfQuery });
+        const resultOfEval = endpointData.resultEval(resultOfQuery, additionalData);//new Function("v", `with (v) { return (${format(endpointData.resultEval)})}`)({ result: resultOfQuery });
 
         return resultOfEval;
     }
@@ -179,7 +179,7 @@ export class Wallet {
             const targetAddress = walletAddress ?? this.getAddress();
             const balance = await fetchBlockchainApi(this.type, this.apis, 'getBalance', (str: string) => {
                 return str.replace(/\$address/gm, targetAddress);
-            });
+            }, { address: targetAddress });
             return (Number(balance) / 100000000).toFixed(8);
         } catch(e) {
             console.error(e);
@@ -237,7 +237,7 @@ export class Wallet {
         //https://api.blockcypher.com/v1/btc/main/txs/decode (for testing)
         const hash = await fetchBlockchainApi(this.type, this.apis, 'pushTx', (str: string) => {
             return str.replace(/\$txHex/gm, txHex);
-        });
+        }, { txHex: txHex });
         if (hash !== undefined) {
             return { success: true, description: hash };
         }
@@ -257,7 +257,7 @@ export class Wallet {
         const lastestHash = await fetchBlockchainApi(this.type, this.apis, 'getLatestBlockHash');
         const averageFeesPerByteInSatoshi = await fetchBlockchainApi(this.type, this.apis, 'getLatestBlockAverageFeePerByteInSatoshi', (str: string) => {
             return str.replace(/\$latesthash/gm, lastestHash)
-        });
+        }, { lastestHash: lastestHash });
 
         // +30%
         const averageFeesPerByteInSatoshiSpeed = Number((averageFeesPerByteInSatoshi * 1.30).toFixed(0));
@@ -267,7 +267,7 @@ export class Wallet {
     public async getUTXOList() {
         const listOfUTXO = await fetchBlockchainApi(this.type, this.apis, 'getUnspentOutputs', (str: string) => {
             return str.replace(/\$address/gm, this.getAddress())
-        });
+        }, { address: this.getAddress() });
         return listOfUTXO;
     }
 
