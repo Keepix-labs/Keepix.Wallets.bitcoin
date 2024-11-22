@@ -1,6 +1,6 @@
 {
   "name": "@keepix/wallets-bitcoin",
-  "version": "0.0.10",
+  "version": "0.0.20",
   "description": "Wallets bitcoin library",
   "private": false,
   "main": "dist/index.js",
