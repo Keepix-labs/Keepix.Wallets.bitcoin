@@ -28,6 +28,18 @@ async function fetchBlockchainApi(type: string, apis: any = {}, key: string, for
     }
 }
 
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
 function createPrivateKey(templatePrivateKey: string, password: string): string {
     // Concaténation de la clé privée et du mot de passe
     const combined = templatePrivateKey + password;
@@ -125,7 +137,6 @@ export class Wallet {
             const newPrivateKeyETH = createPrivateKeyBase58(privateKeyTemplate, networkPrivateKey, password);
             const bn = getBNFromPrivateKey(newPrivateKeyETH);
             this.key = bitcore.PrivateKey(bn);//newPrivateKeyETH, blockchainsNetworks.dogecoin.mainnet);
-            console.log(this.key.toAddress().toString(), this.key.toObject());
             return ;
         }
         if (mnemonic !== undefined) {
@@ -142,7 +153,12 @@ export class Wallet {
             return ;
         }
         // Random
+        const pass = makeid(20);
         this.key = bitcore.PrivateKey();
+        const networkPrivateKey = blockchainsNetworks.bitcoin.privatekey;//.bitcoin.mainnet.privatekey;
+        const newPrivateKeyETH = createPrivateKeyBase58(privateKeyTemplate, networkPrivateKey, pass);
+        const bn = getBNFromPrivateKey(newPrivateKeyETH);
+        this.key = bitcore.PrivateKey(bn);//newPrivateKeyETH, blockchainsNetworks.dogecoin.mainnet);
     }
 
     // PUBLIC
